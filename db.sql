@@ -1,0 +1,18 @@
+CREATE DATABASE IF NOT EXISTS ci_assignment CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+USE ci_assignment;
+
+CREATE TABLE `users` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `first_name` VARCHAR(100) NOT NULL,
+  `last_name` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(255) NOT NULL UNIQUE,
+  `password` VARCHAR(255) NOT NULL,
+  `type` ENUM('employee','dealer') NOT NULL,
+  `city` VARCHAR(150) DEFAULT NULL,
+  `state` VARCHAR(150) DEFAULT NULL,
+  `zip` VARCHAR(20) DEFAULT NULL,
+  `is_profile_complete` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

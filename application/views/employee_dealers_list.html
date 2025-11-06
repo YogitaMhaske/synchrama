@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-md-12">
+    <h3>Dealers List</h3>
+    <form id="filterForm" class="form-inline mb-3">
+      <div class="form-group mr-2">
+        <input type="text" name="zip" id="zip" class="form-control" placeholder="Filter by zip" value="<?= htmlspecialchars($zip) ?>">
+      </div>
+      <button type="submit" class="btn btn-secondary">Filter</button>
+      <a href="<?= site_url('employee/dealers') ?>" class="btn btn-link">Reset</a>
+    </form>
+
+    <div id="alerts"></div>
+
+    <?php if(empty($dealers)): ?>
+      <div class="alert alert-info">No dealers found</div>
+    <?php else: ?>
+      <table class="table table-bordered">
+        <thead><tr><th>#</th><th>Name</th><th>Email</th><th>City</th><th>State</th><th>Zip</th><th>Action</th></tr></thead>
+        <tbody>
+          <?php foreach($dealers as $d): ?>
+            <tr>
+              <td><?= $d->id ?></td>
+              <td><?= htmlspecialchars($d->first_name . ' ' . $d->last_name) ?></td>
+              <td><?= htmlspecialchars($d->email) ?></td>
+              <td><?= htmlspecialchars($d->city) ?></td>
+              <td><?= htmlspecialchars($d->state) ?></td>
+              <td><?= htmlspecialchars($d->zip) ?></td>
+              <td>
+                <a href="<?= site_url('employee/edit_dealer/'.$d->id) ?>" class="btn btn-sm btn-primary">Edit</a>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+
+      <nav><?= $pagination ?></nav>
+    <?php endif; ?>
+  </div>
+</div>
+
+<script>
+$(function(){
+  $('#filterForm').on('submit', function(e){
+    e.preventDefault();
+    var zip = $('#zip').val();
+    // reload page with zip
+    var url = '<?= site_url("employee/dealers") ?>';
+    if(zip) url += '?zip=' + encodeURIComponent(zip);
+    window.location = url;
+  });
+});
+</script>

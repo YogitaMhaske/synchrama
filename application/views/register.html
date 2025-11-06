@@ -1,0 +1,87 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <h3>Register</h3>
+    <div id="alert"></div>
+    <form id="registerForm" novalidate>
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" name="first_name" id="first_name" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" name="last_name" id="last_name" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" id="email" class="form-control" required>
+        <small id="emailHelp" class="form-text text-muted"></small>
+      </div>
+      <div class="form-group">
+        <label>Password (min 6)</label>
+        <input type="password" name="password" id="password" class="form-control" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select name="type" id="type" class="form-control">
+          <option value="employee">Employee</option>
+          <option value="dealer">Dealer</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Register (AJAX)</button>
+    </form>
+  </div>
+</div>
+
+<script>
+$(function(){
+  // cheking email uniqueness on blur
+  $('#email').on('blur', function(){
+    var email = $(this).val().trim();
+    if(!email) return;
+    //incomplete mail chec
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      $('#emailHelp').text('Enter a valid email (include domain and TLD)').css('color','red');
+      return;
+    } else {
+      $('#emailHelp').text('');
+    }
+    $.post('<?= site_url("ajax/check_email") ?>', {email: email}, function(res){
+      if(res.exists){
+        $('#emailHelp').text('Email already used').css('color','red');
+      } else {
+        $('#emailHelp').text('Email available').css('color','green');
+      }
+    }, 'json');
+  });
+
+  $('#registerForm').on('submit', function(e){
+    e.preventDefault();
+    
+    var email = $('#email').val().trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      showAlert('danger','Invalid email.');
+      return;
+    }
+    var data = {
+      first_name: $('#first_name').val(),
+      last_name: $('#last_name').val(),
+      email: email,
+      password: $('#password').val(),
+      type: $('#type').val()
+    };
+    $.post('<?= site_url("ajax/register") ?>', data, function(res){
+      if(res.status === 'success'){
+        showAlert('success', res.message);
+        // redirect to login 
+        setTimeout(function(){ window.location = '<?= site_url("login") ?>'; }, 1200);
+      } else {
+        showAlert('danger', res.message);
+      }
+    }, 'json').fail(function(){ showAlert('danger','Server error'); });
+  });
+
+  function showAlert(type,msg){
+    $('#alert').html('<div class="alert alert-'+type+'">'+msg+'</div>');
+  }
+});
+</script>

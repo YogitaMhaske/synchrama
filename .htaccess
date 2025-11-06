@@ -1,0 +1,12 @@
+RewriteEngine On
+RewriteBase /learn/synchrama/
+
+# 1. Remove .php extension
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.+)$ $1.php [L,QSA]
+
+# 2. Remove index.php from URL
+RewriteCond %{REQUEST_URI} !index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
